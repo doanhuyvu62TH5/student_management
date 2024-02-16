@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Models\Student;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class StudentController extends Controller
+{
+    public function index():view
+    {
+        $students = Student::all();
+        return view ('student.index')->with('students', $students);
+    }
+ 
+    
+    public function create():View
+    {
+        return view('student.create');
+    }
+ 
+   
+    public function store(Request $request):RedirectResponse
+    {
+        request()-> validate([
+            'name' => 'required'
+        ]);
+        $input = $request->all();
+        Student::create($input);
+        return redirect('students')->with('flash_message', 'Student Addedd!');  
+    }
+ 
+    
+    public function show(string $id):view
+    {
+        $students = Student::find($id);
+        return view('student.show')->with('students',$students);
+    }
+ 
+    
+    public function edit(string $id):view
+    {
+        $students = Student::find($id);
+        return view('student.edit')->with('students', $students);
+    }
+ 
+  
+    public function update(Request $request, $id)
+    {
+        $student = Student::find($id);
+        $input = $request->all();
+        $student->update($input);
+        return redirect('students')->with('flash_message', 'student Updated!'); 
+    }
+ 
+   
+    public function destroy(string $id)
+    {
+        Student::destroy($id);
+        return redirect('students')->with('flash_message', 'Student deleted!');
+    }
+}
